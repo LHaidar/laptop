@@ -1,0 +1,46 @@
+#!/usr/bin/ruby
+
+require 'irb/completion'
+require 'irb/ext/save-history'
+require 'rubygems'
+
+IRB.conf[:AUTO_INDENT] = true
+IRB.conf[:USE_READLINE] = true
+IRB.conf[:PROMPT_MODE] = :SIMPLE # Remove annoying 'irb(main):001:0' and use '>>'
+IRB.conf[:SAVE_HISTORY] = 5000
+IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb-save-history"
+
+class Object
+  # List methods which are not in superclass.
+  def local_methods(obj = self)
+    (obj.methods - obj.class.superclass.instance_methods).sort
+  end
+end
+
+# Copies the last IRB result to the clipboard.
+def copy
+  %x[echo "#{IRB.CurrentContext.last_value}" | pbcopy]
+  true
+end
+
+# http://ozmm.org/posts/time_in_irb.html
+def time(iterations: 1)
+  require 'benchmark'
+  result = nil
+  Benchmark.bm { |x| x.report { iterations.times { result = yield } } }
+  result
+end
+
+def q
+  exit
+end
+
+def clear
+  system 'clear'
+  return 'In a plain Ruby environment - happy hacking!'
+end
+
+railsrc = File.expand_path('~/.railsrc')
+load railsrc if File.exist?(railsrc) && (ENV['RAILS_ENV'] || defined? Rails)
+
+puts "Ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}"

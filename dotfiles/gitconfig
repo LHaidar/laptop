@@ -1,0 +1,44 @@
+[user]
+	name = Leia Haidar
+	email = l.haidar0901@gmail.com
+[credential]
+	helper = osxkeychain
+[core]
+	excludesfile = ~/.gitignore
+	editor = "open -W -n" # Uses TextEdit by default
+[alias]
+  a = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /' # List all git aliases
+  b = branch
+  db = branch -D # Delete branch
+  nb = checkout -b # New branch
+  ci = commit
+  co = checkout
+  cgl = config --global --list
+  f = fetch
+  fo = fetch origin
+  fu = fetch upstream
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+  p = push
+  po = push origin
+  pos = push origin staging
+  pom = push origin master
+  phm = push heroku master
+  ros = rebase origin/staging
+  rom = rebase origin/master
+  rus = rebase upstream/staging
+  rum = rebase upstream/master
+  s = status
+  todos = grep -EI "TODO|FIXME" -- './*' ':!vendor/' ':!tmp/' | grcat conf.todos
+  uci = reset --soft HEAD^ # Undo last commit with changes intact
+[color]
+  ui = auto
+  branch = auto
+[color "diff"]
+  meta = yellow bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+[color "status"]
+  added = yellow
+  changed = green
+  untracked = cyan

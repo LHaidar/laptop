@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+alias g='git'
+alias gb='git branch'
+alias gco='git checkout'
+alias gfo='git fetch origin'
+alias gfu='git fetch upstream'
+alias gs='git status'
