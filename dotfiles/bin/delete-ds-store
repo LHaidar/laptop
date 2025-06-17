@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+(
+  set -x;
+
+  find . -type f -name '.DS_Store' -ls -delete
+  find . -type f -name 'Thumbs.db' -ls -delete
+)

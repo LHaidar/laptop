@@ -1,58 +1,26 @@
-#!/bin/bash -e
+#!/bin/sh
 
-alias aliases="alias | sed 's/alias //g' | sed 's/=/ = /g'"
-alias paths='echo -e ${PATH//:/\\n}' # pretty print all paths
+if [ -d "$HOME/.bin" ]; then
+  export PATH="$HOME/.bin:$PATH"
+fi
 
 alias opendir='open -R .'
+
 alias ..='cd ..'
 alias home='cd ~'
-alias docs='cd ~/Documents'
 alias documents='cd ~/Documents'
 alias p='cd ~/Projects'
 alias projects='cd ~/Projects'
 alias laptop='cd ~/Projects/laptop'
 alias dotfiles='cd ~/Projects/laptop/dotfiles'
 
-alias h='history'
-alias hsearch='history | grep --color=auto'
-
-alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
-
 alias r='reload'
 alias c='clear'
 alias q='exit'
 
-localip() {
-  ifconfig | grep broadcast | awk '{ print $2 }'
-}
-
-remoteip() {
-  curl -s ipecho.net/plain && echo ''
-}
-
-todos() {
-  grep -r -EI "TODO|FIXME" --exclude-dir={.git,public,vendor,node_modules,tmp,.vscode} . |
-    # Colorize search results (by default looks in ~/.grc)
-    grcat conf.todos |
-    # print file name and then on a new line show only the matching text
-    awk -F: '{ printf "\n"; print $1; print substr($0,index($0,$2));}' |
-    # Replace any leading whitespaces with a set of 4 (tabs are too much)
-    sed -E "s/[[:blank:]]{2,}/    /"
-}
-
+# shellcheck disable=SC1091
 reload() {
-  # shellcheck disable=SC1090
-  source "$HOME/.profile"
-}
-
-hstats() {
-  history |
-    awk '{CMD[$4]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' |
-    grep -v "./" |
-    column -c3 -s " " -t |
-    sort -nr |
-    nl |
-    head -n20
+  . "$HOME/.zshrc"
 }
 
 executable() {
@@ -60,12 +28,7 @@ executable() {
 }
 
 search() {
-  searchin . "$@"
-}
-
-searchin () {
-  find "$1" -type f -print0 |
-    xargs -0 grep -l "$2"
+  find . -type f -print0 | xargs -0 grep -l "$1"
 }
 
 # Empty the Trash on all mounted volumes and the main HDD
@@ -74,12 +37,4 @@ emptytrash() {
   sudo rm -rfv /Volumes/*/.Trashes
   sudo rm -rfv ~/.Trash
   sudo rm -rfv /private/var/log/asl/*.asl
-}
-
-# with edits: http://www.anthonysmith.me.uk/2008/01/08/moving-files-to-trash-from-the-mac-command-line/
-trash() {
-  local path
-  for path in "$@"; do
-    osascript -e "tell application \"Finder\"" -e "delete POSIX file \"${PWD}/$path\"" -e "end tell"
-  done
 }

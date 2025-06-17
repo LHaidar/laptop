@@ -1,0 +1,62 @@
+#!/bin/zsh
+
+# Case-insensitive globbing (used in pathname expansion)
+setopt NO_CASE_GLOB
+
+# Try to correct the spelling of commands.
+#   > Dekstop
+#   zsh: correct 'Dekstop' to 'Desktop' [nyae]?
+setopt CORRECT
+
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+setopt EXTENDED_HISTORY # add timestamps to history
+setopt INC_APPEND_HISTORY # adds history incrementally
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_NO_STORE # don't add history commands to history
+
+# For Bash-like autocompletion in ZSH
+# https://serverfault.com/a/447549
+setopt NO_AUTO_MENU
+setopt NO_MENU_COMPLETE
+
+# Set PATH, MANPATH, etc., for Homebrew.
+if [ -f "/opt/homebrew/bin/brew" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+brew_prefix="$(brew --prefix)"
+
+if type brew &>/dev/null; then
+  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+
+  autoload -Uz compinit
+  compinit
+fi
+
+# Load grc (Terminal colorizer)
+if [ -f "$brew_prefix/etc/grc.zsh" ]; then
+  . "$brew_prefix/etc/grc.zsh"
+fi
+
+# Load 1Password auto complete
+if command -v op >/dev/null 2>&1; then
+  eval "$(op completion zsh)"; compdef _op op
+fi
+
+# Make tabbing autocomplete regardless of case. (https://superuser.com/a/1092328)
+zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}'
+
+for profile_config in "$HOME"/.profile.d/*
+do
+  source "$profile_config"
+done
+
+if [ ! -f "$HOME/.zsh_local" ]; then
+  touch "$HOME/.zsh_local"
+fi
+source "$HOME/.zsh_local"
+
+unset brew_prefix profile_config
