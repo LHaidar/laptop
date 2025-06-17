@@ -1,24 +1,36 @@
 cask_args appdir: '/Applications'
-tap 'caskroom/cask'
 
 cask '1password'
+cask '1password-cli'
 cask 'appcleaner'
 cask 'cheatsheet'
+cask 'epic-games'
 cask 'firefox'
 cask 'github'
 cask 'google-chrome'
-cask 'openemu'
+# cask 'openemu'
+cask 'steam'
+cask 'zoom'
 
 # Automatically prompted to sign in to MAS if signed out.
-mas 'Things 3', id: 904280696
+mas '1Password for Safari', id: 1569813296 # Safari Extension
+mas 'Things', id: 904280696
 mas 'DaisyDisk', id: 411643860
-mas 'Day One', id: 1055511498
-# mas 'Fantastical 2', id: 975937182
+mas 'Amazon Prime Video', id: 545519333
+# mas 'Delta - Game Emulator', id: 1048524688
+# mas 'Fantastical', id: 975937182
 # mas 'iA Writer', id: 775737590
+mas 'Karma for Safari', id: 1481191441
 mas 'Keynote', id: 409183694
+mas 'Kindle', id: 302584613
+mas 'Mela', id: 1568924476
+mas 'Messenger', id: 1480068668
 mas 'Numbers', id: 409203825
 mas 'Pages', id: 409201541
+mas 'PayPal Honey for Safari', id: 1472777122
 mas 'GarageBand', id: 682658836
 mas 'iMovie', id: 408981434
-# mas 'Reeder 4', id: 1449412482
 mas 'The Unarchiver', id: 425424353
+mas 'WhatsApp Messenger', id: 310633997
+mas 'The Unarchiver', id: 425424353
+mas 'Wipr 2', id: 1662217862
