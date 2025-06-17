@@ -1,34 +1,34 @@
 #!/usr/bin/ruby
 
+require 'irb'
 require 'irb/completion'
-require 'irb/ext/save-history'
 require 'rubygems'
 
-IRB.conf[:AUTO_INDENT] = true
+IRB.conf[:AUTO_INDENT] = true # Ruby 2.7: true is new default https://bit.ly/2IYxNqc
 IRB.conf[:USE_READLINE] = true
-IRB.conf[:PROMPT_MODE] = :SIMPLE # Remove annoying 'irb(main):001:0' and use '>>'
-IRB.conf[:SAVE_HISTORY] = 5000
-IRB.conf[:HISTORY_FILE] = "#{ENV['HOME']}/.irb-save-history"
+IRB.conf[:PROMPT_MODE] = :SIMPLE # Use `>>` for prompt.
+IRB.conf[:SAVE_HISTORY] = 1000
 
-class Object
-  # List methods which are not in superclass.
-  def local_methods(obj = self)
-    (obj.methods - obj.class.superclass.instance_methods).sort
-  end
+def local_methods(obj=self)
+  (obj.public_methods - Object.public_methods - Object.instance_methods).sort
 end
 
-# Copies the last IRB result to the clipboard.
-def copy
-  %x[echo "#{IRB.CurrentContext.last_value}" | pbcopy]
-  true
+def predicates(obj=self)
+  local_methods(obj).grep(/\?$/)
 end
 
-# http://ozmm.org/posts/time_in_irb.html
+def locate(obj, method)
+  obj.method(method.to_sym).source_location
+end
+
 def time(iterations: 1)
   require 'benchmark'
-  result = nil
-  Benchmark.bm { |x| x.report { iterations.times { result = yield } } }
-  result
+  Benchmark.measure { iterations.times { yield } } if block_given?
+end
+
+def copy
+  system "echo \"#{IRB.CurrentContext.last_value}\" | pbcopy"
+  true
 end
 
 def q
@@ -37,7 +37,7 @@ end
 
 def clear
   system 'clear'
-  return 'In a plain Ruby environment - happy hacking!'
+  "Ruby #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}"
 end
 
 railsrc = File.expand_path('~/.railsrc')

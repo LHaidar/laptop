@@ -1,11 +1,11 @@
 [user]
-	name = Leia Haidar
-	email = l.haidar0901@gmail.com
-[credential]
-	helper = osxkeychain
+  name = Leia Haidar
+  email = l.haidar0901@gmail.com
+[github]
+  user = LHaidar
 [core]
-	excludesfile = ~/.gitignore
-	editor = "open -W -n" # Uses TextEdit by default
+  excludesfile = ~/.gitignore
+  editor = "open -W -n" # Uses TextEdit by default
 [alias]
   a = !git config --get-regexp 'alias.*' | colrm 1 6 | sed 's/[ ]/ = /' # List all git aliases
   b = branch
@@ -20,15 +20,13 @@
   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
   p = push
   po = push origin
-  pos = push origin staging
-  pom = push origin master
-  phm = push heroku master
-  ros = rebase origin/staging
-  rom = rebase origin/master
-  rus = rebase upstream/staging
-  rum = rebase upstream/master
+  # https://stackoverflow.com/questions/66232497/git-alias-which-works-for-main-or-master-or-other/66236845
+  pom = "!f(){ git push origin $(git symbolic-ref refs/remotes/origin/HEAD | cut -d'/' -f4) $@;}; f"
+  rom = "!f(){ git rebase $(git symbolic-ref refs/remotes/origin/HEAD) $@;}; f"
+  # https://davidwalsh.name/get-default-branch-name
+  rum = "!f(){ git rebase upstream/$(git remote show upstream | grep 'HEAD branch' | cut -d' ' -f5) $@;}; f"
+  reset-origin-head = remote set-head origin --auto # Reset local if default branch changed remotely e.g. master->main
   s = status
-  todos = grep -EI "TODO|FIXME" -- './*' ':!vendor/' ':!tmp/' | grcat conf.todos
   uci = reset --soft HEAD^ # Undo last commit with changes intact
 [color]
   ui = auto
@@ -43,7 +41,9 @@
   changed = green
   untracked = cyan
 [filter "lfs"]
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
-	clean = git-lfs clean -- %f
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[init]
+	defaultBranch = main
